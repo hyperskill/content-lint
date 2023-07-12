@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "content-lint"
+version = "0.1.0"
+description = ""
+authors = ["Hyperskill Team"]
+readme = "README.md"
+packages = [{include = "content_lint"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
