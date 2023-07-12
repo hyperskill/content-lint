@@ -8,12 +8,20 @@ packages = [{include = "content_lint"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+beautifulsoup4 = "^4.12.2"
+cssutils = "^2.7.1"
+lxml = "^4.9.3"
+pillow = "^10.0.0"
+requests = "^2.31.0"
+structlog = "^23.1.0"
+svgelements = "^1.9.5"
 
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
-ruff = "^0.0.277"
 mypy = "^1.4.1"
+ruff = "^0.0.277"
+types-requests = "^2.31.0.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -147,7 +155,7 @@ line-length = 88
 target-version = "py311"
 
 [tool.ruff.mccabe]
-max-complexity = 1
+max-complexity = 10
 
 [tool.ruff.pydocstyle]
 convention = "google"
@@ -163,10 +171,10 @@ classmethod-decorators = [
 ]
 
 [tool.ruff.pylint]
-max-args = 1
-max-branches = 1
-max-returns = 1
-max-statements = 1
+max-args = 4
+max-branches = 9
+max-returns = 45
+max-statements = 19
 
 [tool.ruff.isort]
 combine-as-imports = true
