@@ -22,6 +22,7 @@ from content_lint.transform.plain_text.video import (
 )
 from content_lint.transform.to_cogniterra.alerts import prepare_alerts_for_cogniterra
 from content_lint.transform.to_cogniterra.video import prepare_video_for_cogniterra
+from content_lint.transform.plain_text.remove_dots import remove_dots
 
 if TYPE_CHECKING:
     from content_lint.typing import (
@@ -38,6 +39,7 @@ PLAIN_TEXT_OPERATIONS: Final[tuple[StepTransformer, ...]] = (
     prepare_text,
     prepare_alerts,
     prepare_video,
+    remove_dots,
 )
 
 HTML_OPERATIONS: Final[tuple[StepHtmlTransformer, ...]] = (
