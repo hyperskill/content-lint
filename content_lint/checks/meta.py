@@ -8,7 +8,7 @@ from content_lint.checks.checkers import IssueLevel
 if TYPE_CHECKING:
     from typing import Final
 
-    from content_lint.typing import StepData
+    from content_lint.types import StepData
 
 TAG_PATTERN: Final = re.compile(r'\[(/?)(pre|meta|alert)[^]]*]', re.IGNORECASE)
 

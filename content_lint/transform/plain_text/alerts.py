@@ -8,7 +8,7 @@ from content_lint.helpers import replace
 if TYPE_CHECKING:
     from typing import Final
 
-    from content_lint.typing import Replacement, StepData
+    from content_lint.types import Replacement, StepData
 
 ALERT_TAGS_REGEX: Final = re.compile(
     r'\[ALERT-(.*?)]([\s\S]*?)\[/ALERT]', re.IGNORECASE

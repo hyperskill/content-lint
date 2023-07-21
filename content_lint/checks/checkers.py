@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, TypedDict
 
-from content_lint.typing import IssueLevel, StepData
+from content_lint.types import IssueLevel, StepData
 
 if TYPE_CHECKING:
     from re import Match

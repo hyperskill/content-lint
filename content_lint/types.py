@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from collections.abc import Callable
 from enum import StrEnum, unique
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from bs4 import BeautifulSoup
 
@@ -26,19 +26,24 @@ class StageData(TypedDict):
     is_template_based: bool
 
 
-class Option(TypedDict):
+class StepOptions(TypedDict):
+    code_templates: dict[str, str]
+    files: NotRequired[list[FileData]]
+    language: NotRequired[str]
+
+
+class ChoiceStepOption(TypedDict):
     text: str
+    is_correct: bool
+    feedback: str
 
 
 class StepData(TypedDict):
-    step_index: int
-    block_name: str
+    name: str
     text: str
-    code_templates: dict[str, str]
-    supported_code_templates_languages: tuple[str]
-    files: tuple[FileData, ...]
-    stage: StageData | None
-    options: tuple[Option, ...]
+    step_index: int
+    options: StepOptions | list[ChoiceStepOption]
+    stage: NotRequired[StageData]
 
 
 StepTransformer = Callable[[StepData], None]

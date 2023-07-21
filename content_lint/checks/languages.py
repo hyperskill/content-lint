@@ -6,7 +6,7 @@ from content_lint.checks.checkers import IssueLevel
 from content_lint.constants import CODE_BLOCK_NAME
 
 if TYPE_CHECKING:
-    from content_lint.typing import StepData
+    from content_lint.types import StepData
 
 
 def check_languages(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:

@@ -6,7 +6,7 @@ from typing import Final, TYPE_CHECKING
 from content_lint.helpers import replace
 
 if TYPE_CHECKING:
-    from content_lint.typing import Replacement, StepData
+    from content_lint.types import Replacement, StepData
 
 ALERT_TAGS: Final = r'[ALERT-\g<1>]\g<2>[/ALERT]'
 HTML_DIV_ALERT_TAGS_REGEX: Final = re.compile(

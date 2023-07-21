@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from content_lint.constants import PYCHARM_BLOCK_NAME
-from content_lint.typing import IssueLevel, StepData
+from content_lint.types import IssueLevel, StepData
 
 
 def check_stages(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:

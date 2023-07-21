@@ -6,7 +6,7 @@ from typing import Final, TYPE_CHECKING
 from content_lint.helpers import replace, Replacement
 
 if TYPE_CHECKING:
-    from content_lint.typing import StepData
+    from content_lint.types import StepData
 
 HTML_VIDEO_ALERT_TAGS_REGEX: Final = re.compile(
     r'<video(.*?)>([\s\S]*?)</video>', re.IGNORECASE

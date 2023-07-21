@@ -16,16 +16,16 @@ from content_lint.transform.plain_text.alerts import (
     prepare_alerts,
 )
 from content_lint.transform.plain_text.meta import prepare_meta
-from content_lint.transform.plain_text.text import prepare_text
+from content_lint.transform.plain_text.remove_dots import remove_dots
+from content_lint.transform.plain_text.text import clear_text_from_title, prepare_text
 from content_lint.transform.plain_text.video import (
     prepare_video,
 )
 from content_lint.transform.to_cogniterra.alerts import prepare_alerts_for_cogniterra
 from content_lint.transform.to_cogniterra.video import prepare_video_for_cogniterra
-from content_lint.transform.plain_text.remove_dots import remove_dots
 
 if TYPE_CHECKING:
-    from content_lint.typing import (
+    from content_lint.types import (
         IssueLevel,
         StepChecker,
         StepData,
@@ -34,15 +34,16 @@ if TYPE_CHECKING:
         ToCogniterraTransformer,
     )
 
-PLAIN_TEXT_OPERATIONS: Final[tuple[StepTransformer, ...]] = (
+PLAIN_TEXT_FIXERS: Final[tuple[StepTransformer, ...]] = (
     prepare_meta,
     prepare_text,
+    clear_text_from_title,
     prepare_alerts,
     prepare_video,
     remove_dots,
 )
 
-HTML_OPERATIONS: Final[tuple[StepHtmlTransformer, ...]] = (
+HTML_FIXERS: Final[tuple[StepHtmlTransformer, ...]] = (
     prepare_headers,
     prepare_links,
     prepare_code_sections,
@@ -51,12 +52,12 @@ HTML_OPERATIONS: Final[tuple[StepHtmlTransformer, ...]] = (
 
 
 def fix_step_text(step: StepData) -> None:
-    for plain_text_operation in PLAIN_TEXT_OPERATIONS:
+    for plain_text_operation in PLAIN_TEXT_FIXERS:
         plain_text_operation(step)
 
     bs = BeautifulSoup(step['text'], 'lxml')
 
-    for html_operation in HTML_OPERATIONS:
+    for html_operation in HTML_FIXERS:
         html_operation(bs)
 
     if (body := bs.body) is None:
@@ -65,18 +66,19 @@ def fix_step_text(step: StepData) -> None:
     step['text'] = ''.join(map(str, body.contents))
 
 
-def check_step_text(step: StepData) -> list[tuple[IssueLevel, str]]:
-    checkers: tuple[StepChecker, ...] = (
-        check_meta_tags,
-        simple_checker,
-        hyphen_checker,
-        check_stages,
-        check_languages,
-    )
+CHECKERS: tuple[StepChecker, ...] = (
+    check_meta_tags,
+    simple_checker,
+    hyphen_checker,
+    check_stages,
+    check_languages,
+)
 
+
+def check_step_text(step: StepData) -> list[tuple[IssueLevel, str]]:
     all_issues: list[tuple[IssueLevel, str]] = []
 
-    for checker in checkers:
+    for checker in CHECKERS:
         issues = checker(step)
         all_issues.extend(issues)
 

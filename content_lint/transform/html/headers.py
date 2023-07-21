@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from django.utils.text import slugify
+from content_lint.helpers import slugify
 
 if TYPE_CHECKING:
     from bs4 import BeautifulSoup

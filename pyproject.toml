@@ -20,8 +20,10 @@ svgelements = "^1.9.5"
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
 mypy = "^1.4.1"
+pytest = "^7.4.0"
 ruff = "^0.0.277"
 types-requests = "^2.31.0.1"
+responses = "^0.23.1"
 
 [build-system]
 requires = ["poetry-core"]
@@ -171,7 +173,7 @@ classmethod-decorators = [
 ]
 
 [tool.ruff.pylint]
-max-args = 4
+max-args = 5
 max-branches = 9
 max-returns = 45
 max-statements = 19
@@ -204,3 +206,16 @@ warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --doctest-modules"
+python_files = [
+    "tests.py",
+    "test_*.py"
+]
+norecursedirs = [
+    ".git",
+    ".idea",
+    "node_modules",
+    "out",
+]
