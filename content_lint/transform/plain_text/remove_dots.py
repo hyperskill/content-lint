@@ -1,8 +1,5 @@
 import re
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from content_lint.typing import StepData
+from content_lint.typing import StepData
 
 PATTERN = re.compile(r"[a-zA-Z0-9!@#$%^&*()_+-=\{\}\[\]|\\:;\"\'<>,?/~`]")
 
