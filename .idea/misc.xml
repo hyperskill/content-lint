@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="enabledOnReformat" value="true" />
+    <option name="sdkUUID" value="f2b5706b-2da3-49c0-a359-c701631808c6" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_20" project-jdk-name="Python 3.11 (content-lint)" project-jdk-type="Python SDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

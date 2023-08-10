@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, TypedDict
 
-from content_lint.types import IssueLevel, StepData
+from content_lint.types import IssueLevel, Settings, StepData
 
 if TYPE_CHECKING:
     from re import Match
@@ -43,7 +43,9 @@ def _position_by_match(text: str, match: Match[str]) -> tuple[int, ...]:
     return line, column, position
 
 
-def simple_checker(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:
+def simple_checker(
+    step: StepData, settings: Settings
+) -> tuple[tuple[IssueLevel, str], ...]:
     issues: list[tuple[IssueLevel, str]] = []
     text = step['text']
 
@@ -70,7 +72,9 @@ FORMULA_PATTERN: Final = re.compile(
 HYPHEN_PATTERN: Final = re.compile(r' --? ', re.IGNORECASE | re.UNICODE)
 
 
-def hyphen_checker(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:
+def hyphen_checker(
+    step: StepData, settings: Settings
+) -> tuple[tuple[IssueLevel, str], ...]:
     text = step['text']
     iterator = FORMULA_PATTERN.finditer(text)
     formulas_indexes = {match.span() for match in iterator}

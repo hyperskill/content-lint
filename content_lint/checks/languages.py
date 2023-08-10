@@ -1,19 +1,23 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 
 from content_lint.checks.checkers import IssueLevel
-from content_lint.constants import CODE_BLOCK_NAME
+from content_lint.constants import BlockName
+from content_lint.types import CodeStepOptions
 
 if TYPE_CHECKING:
-    from content_lint.types import StepData
+    from content_lint.types import Settings, StepData
 
 
-def check_languages(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:
-    if step['block_name'] != CODE_BLOCK_NAME:
+def check_languages(
+    step: StepData, settings: Settings
+) -> tuple[tuple[IssueLevel, str], ...]:
+    if step['name'] != BlockName.CODE:
         return ()
 
-    code_templates = step['code_templates']
+    options = cast(CodeStepOptions, step['options'])
+    code_templates = options['code_templates']
     if not code_templates:
         return (
             (
@@ -22,7 +26,7 @@ def check_languages(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:
             ),
         )
 
-    supported_code_templates_languages = step['supported_code_templates_languages']
+    supported_code_templates_languages = settings['supported_code_templates_languages']
 
     if not all(
         language in supported_code_templates_languages for language in code_templates

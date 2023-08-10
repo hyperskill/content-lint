@@ -2,13 +2,18 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 import responses
 from bs4 import BeautifulSoup
-from PIL.Image import Image
+from PIL import Image
 from requests import HTTPError, RequestException, Timeout
-from transform.html.images import prepare_images
+
+from content_lint.transform.html.images import prepare_images
+
+if TYPE_CHECKING:
+    from content_lint.types import Settings
 
 
 @pytest.fixture()
@@ -84,11 +89,13 @@ def _mock_timeout_image_response(
 @pytest.mark.usefixtures(
     '_mock_successful_image_response',
 )
-def test_prepare_img(rsps: responses.RequestsMock, mock_image_url: str) -> None:
+def test_prepare_img(
+    rsps: responses.RequestsMock, mock_image_url: str, settings: Settings
+) -> None:
     text = f'<img name="something.jpeg" src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -104,7 +111,7 @@ def test_prepare_img(rsps: responses.RequestsMock, mock_image_url: str) -> None:
 
 
 def test_prepare_img_if_there_style_copy_value_from_it(
-    rsps: responses.RequestsMock, mock_image_url: str
+    rsps: responses.RequestsMock, mock_image_url: str, settings: Settings
 ) -> None:
     text = (
         f'<img name="something.jpeg" style="width:10px;height:50px" '
@@ -112,7 +119,7 @@ def test_prepare_img_if_there_style_copy_value_from_it(
     )
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -127,7 +134,9 @@ def test_prepare_img_if_there_style_copy_value_from_it(
     )
 
 
-def test_prepare_img_dont_change_alt_height_and_width(mock_image_url: str) -> None:
+def test_prepare_img_dont_change_alt_height_and_width(
+    mock_image_url: str, settings: Settings
+) -> None:
     alt_text = 'something'
     width, height = 800, 600
     text = (
@@ -136,7 +145,7 @@ def test_prepare_img_dont_change_alt_height_and_width(mock_image_url: str) -> No
     )
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -150,7 +159,7 @@ def test_prepare_img_dont_change_alt_height_and_width(mock_image_url: str) -> No
 
 
 def test_prepare_img_change_height_and_width_to_value_without_px(
-    mock_image_url: str,
+    mock_image_url: str, settings: Settings
 ) -> None:
     alt_text = 'something'
     width, height = 800, 600
@@ -160,7 +169,7 @@ def test_prepare_img_change_height_and_width_to_value_without_px(
     )
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -184,13 +193,13 @@ def test_prepare_img_change_height_and_width_to_value_without_px(
     ],
 )
 def test_prepare_img_remove_non_px_and_set_value_from_image(
-    mock_image_url: str, tag_image_dimensions: str
+    mock_image_url: str, tag_image_dimensions: str, settings: Settings
 ) -> None:
     alt_text = 'something'
     text = f'<img alt="{alt_text}" width="auto" height="auto" src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -214,13 +223,13 @@ def test_prepare_img_remove_non_px_and_set_value_from_image(
     ],
 )
 def test_prepare_img_remove_non_px_and_set_value_from_vector_image(
-    mock_image_url: str, tag_image_dimensions: str
+    mock_image_url: str, tag_image_dimensions: str, settings: Settings
 ) -> None:
     alt_text = 'something'
     text = f'<img alt="{alt_text}" width="auto" height="auto" src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -244,13 +253,13 @@ def test_prepare_img_remove_non_px_and_set_value_from_vector_image(
     ],
 )
 def test_prepare_img_remove_non_mm_and_set_value_from_vector_image(
-    mock_image_url: str, tag_image_dimensions: str
+    mock_image_url: str, tag_image_dimensions: str, settings: Settings
 ) -> None:
     alt_text = 'something'
     text = f'<img alt="{alt_text}" width="auto" height="auto" src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -267,26 +276,26 @@ def test_prepare_img_remove_non_mm_and_set_value_from_vector_image(
     '_mock_not_found_image_response',
 )
 def test_prepare_img_dont_change_if_there_is_404_error(
-    rsps: responses.RequestsMock, mock_image_url: str
+    rsps: responses.RequestsMock, mock_image_url: str, settings: Settings
 ) -> None:
     text = f'<img src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
     with pytest.raises(HTTPError):
-        prepare_images(bs)
+        prepare_images(bs, settings)
 
     assert str(bs) == f'<html><body><img alt="" src="{mock_image_url}"/></body></html>'
 
 
 @pytest.mark.usefixtures('_mock_timeout_image_response')
 def test_prepare_img_dont_change_if_there_is_timeout_error(
-    rsps: responses.RequestsMock, mock_image_url: str
+    rsps: responses.RequestsMock, mock_image_url: str, settings: Settings
 ) -> None:
     text = f'<img src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
     with pytest.raises(RequestException):
-        prepare_images(bs)
+        prepare_images(bs, settings)
 
     assert str(bs) == f'<html><body><img alt="" src="{mock_image_url}"/></body></html>'
 
@@ -313,11 +322,12 @@ def test_prepare_img_if_there_only_height_set_width_based_on_original_size(
     size_attr: str,
     width_value: int,
     height_value: int,
+    settings: Settings,
 ) -> None:
     text = f'<img {size_attr} src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -347,11 +357,12 @@ def test_prepare_img_if_there_only_width_set_height_and_width_based_on_original_
     rsps: responses.RequestsMock,
     mock_image_url: str,
     size_attr: str,
+    settings: Settings,
 ) -> None:
     text = f'<img {size_attr} src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -367,12 +378,14 @@ def test_prepare_img_if_there_only_width_set_height_and_width_based_on_original_
 @pytest.mark.usefixtures(
     '_mock_successful_ex_vector_image_response',
 )
-def test_parse_svg_image_with_scale_in_ex_unit(mock_image_url: str) -> None:
+def test_parse_svg_image_with_scale_in_ex_unit(
+    mock_image_url: str, settings: Settings
+) -> None:
     alt_text = 'something'
     text = f'<img alt="{alt_text}" width="auto" height="auto" src="{mock_image_url}"/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == (
         '<html><body>'
@@ -385,10 +398,10 @@ def test_parse_svg_image_with_scale_in_ex_unit(mock_image_url: str) -> None:
     )
 
 
-def test_prepare_empty_img() -> None:
+def test_prepare_empty_img(settings: Settings) -> None:
     text = '<img/>'
     bs = BeautifulSoup(text, 'lxml')
 
-    prepare_images(bs)
+    prepare_images(bs, settings)
 
     assert str(bs) == '<html><body></body></html>'

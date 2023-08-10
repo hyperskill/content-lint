@@ -1,19 +1,24 @@
 from __future__ import annotations
 
-from content_lint.constants import PYCHARM_BLOCK_NAME
-from content_lint.types import IssueLevel, StepData
+from typing import cast
+
+from content_lint.constants import BlockName
+from content_lint.types import IssueLevel, PyCharmStepOptions, Settings, StepData
 
 
-def check_stages(step: StepData) -> tuple[tuple[IssueLevel, str], ...]:
+def check_stages(
+    step: StepData, settings: Settings
+) -> tuple[tuple[IssueLevel, str], ...]:
     if (
         not step['stage']
         or step['stage']['is_template_based']
-        or step['block_name'] != PYCHARM_BLOCK_NAME
+        or step['name'] != BlockName.PYCHARM
         or step['step_index'] == 1
     ):
         return ()
 
-    files = step['files']
+    options = cast(PyCharmStepOptions, step['options'])
+    files = options['files']
 
     if any(file.get('is_visible', True) for file in files):
         return (

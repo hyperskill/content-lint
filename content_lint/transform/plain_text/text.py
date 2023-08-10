@@ -8,7 +8,7 @@ from content_lint.helpers import replace
 if TYPE_CHECKING:
     from typing import Final
 
-    from content_lint.types import Replacement, StepData
+    from content_lint.types import Replacement, Settings, StepData
 
 ZERO_WIDTH_SPACES: Final = re.compile(r'[\ufeff\u200b]', re.IGNORECASE)
 SPACES: Final = re.compile(r'[^\S\n\t]|[\u180e]', re.IGNORECASE)
@@ -19,7 +19,7 @@ REPLACE: Final[dict[re.Pattern[str], Replacement]] = {
 }
 
 
-def prepare_text(step: StepData) -> None:
+def prepare_text(step: StepData, settings: Settings) -> None:
     step['text'] = replace(step['text'], REPLACE)
 
 
@@ -30,7 +30,7 @@ TITLE_WITH_EXTRA_TAGS_REGEX: Final = re.compile(
 )
 
 
-def clear_text_from_title(step: StepData) -> None:
+def clear_text_from_title(step: StepData, settings: Settings) -> None:
     text = step['text']
     match_obj = TITLE_WITH_EXTRA_TAGS_REGEX.search(text)
     if not match_obj:

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from typing import Final
+from enum import StrEnum, unique
 
-CODE_BLOCK_NAME: Final = 'code'
-PYCHARM_BLOCK_NAME: Final = 'pycharm'
-CHOICE_BLOCK_NAME: Final = 'choice'
+
+@unique
+class BlockName(StrEnum):
+    TEXT = 'text'
+    CODE = 'code'
+    PYCHARM = 'pycharm'
+    CHOICE = 'choice'

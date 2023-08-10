@@ -7,8 +7,10 @@ from content_lint.helpers import slugify
 if TYPE_CHECKING:
     from bs4 import BeautifulSoup
 
+    from content_lint.types import Settings
 
-def prepare_headers(bs: BeautifulSoup) -> None:
+
+def prepare_headers(bs: BeautifulSoup, settings: Settings) -> None:
     headers = bs.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'])
     for header in headers:
         for tag in header.find_all(['b', 'strong']):

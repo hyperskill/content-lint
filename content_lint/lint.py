@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 
 from content_lint.checks.checkers import hyphen_checker, simple_checker
 from content_lint.checks.languages import check_languages
-from content_lint.checks.meta import check_meta_tags
 from content_lint.checks.stages import check_stages
 from content_lint.transform.html.code import prepare_code_sections
 from content_lint.transform.html.headers import prepare_headers
@@ -27,6 +26,7 @@ from content_lint.transform.to_cogniterra.video import prepare_video_for_cognite
 if TYPE_CHECKING:
     from content_lint.types import (
         IssueLevel,
+        Settings,
         StepChecker,
         StepData,
         StepHtmlTransformer,
@@ -51,14 +51,14 @@ HTML_FIXERS: Final[tuple[StepHtmlTransformer, ...]] = (
 )
 
 
-def fix_step_text(step: StepData) -> None:
+def fix_step_text(step: StepData, settings: Settings) -> None:
     for plain_text_operation in PLAIN_TEXT_FIXERS:
-        plain_text_operation(step)
+        plain_text_operation(step, settings)
 
     bs = BeautifulSoup(step['text'], 'lxml')
 
     for html_operation in HTML_FIXERS:
-        html_operation(bs)
+        html_operation(bs, settings)
 
     if (body := bs.body) is None:
         return
@@ -67,7 +67,6 @@ def fix_step_text(step: StepData) -> None:
 
 
 CHECKERS: tuple[StepChecker, ...] = (
-    check_meta_tags,
     simple_checker,
     hyphen_checker,
     check_stages,
@@ -75,19 +74,19 @@ CHECKERS: tuple[StepChecker, ...] = (
 )
 
 
-def check_step_text(step: StepData) -> list[tuple[IssueLevel, str]]:
+def check_step_text(step: StepData, settings: Settings) -> list[tuple[IssueLevel, str]]:
     all_issues: list[tuple[IssueLevel, str]] = []
 
     for checker in CHECKERS:
-        issues = checker(step)
+        issues = checker(step, settings)
         all_issues.extend(issues)
 
     return all_issues
 
 
-def lint(step: StepData) -> list[tuple[IssueLevel, str]]:
-    fix_step_text(step)
-    return check_step_text(step)
+def lint(step: StepData, settings: Settings) -> list[tuple[IssueLevel, str]]:
+    fix_step_text(step, settings)
+    return check_step_text(step, settings)
 
 
 TO_COGNITERRA_TRANSFORMERS: tuple[ToCogniterraTransformer, ...] = (
@@ -96,6 +95,6 @@ TO_COGNITERRA_TRANSFORMERS: tuple[ToCogniterraTransformer, ...] = (
 )
 
 
-def transform_for_cogniterra(step: StepData) -> None:
+def transform_for_cogniterra(step: StepData, settings: Settings) -> None:
     for operation in TO_COGNITERRA_TRANSFORMERS:
-        operation(step)
+        operation(step, settings)

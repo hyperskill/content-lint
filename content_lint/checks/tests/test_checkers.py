@@ -1,16 +1,25 @@
 from __future__ import annotations
 
 from content_lint.checks.checkers import hyphen_checker, simple_checker
-from content_lint.types import IssueLevel, StepData
+from content_lint.constants import BlockName
+from content_lint.types import (
+    CodeStepOptions,
+    IssueLevel,
+    Settings,
+    StepData,
+    TextStepOptions,
+)
 
 
-def test_hyphen() -> None:
-    step = StepFactory()
+def test_hyphen(settings: Settings) -> None:
+    step = StepData(
+        name=BlockName.CODE,
+        text='Some - text',
+        step_index=1,
+        options=CodeStepOptions(code_templates={}),
+    )
 
-    step.step_block.block = {'text': 'Some - text'}
-    step.step_block.save(update_fields=['block'])
-
-    issues = hyphen_checker(step)
+    issues = hyphen_checker(step, settings)
 
     assert len(issues) == 1
     assert issues[0][0] == IssueLevel.WARNING
@@ -20,18 +29,18 @@ def test_hyphen() -> None:
     )
 
 
-def test_hyphen_inside_formula() -> None:
-    step = StepFactory()
+def test_hyphen_inside_formula(settings: Settings) -> None:
+    step = StepData(
+        name=BlockName.CODE,
+        text='m - 1 some text \n'
+        '<span class="math-tex">(n - 1)</span> some text k - 1',
+        step_index=1,
+        options=CodeStepOptions(code_templates={}),
+    )
 
-    step.step_block.block = {
-        'text': 'm - 1 some text \n'
-        '<span class="math-tex">(n - 1)</span> some text k - 1'
-    }
-    step.step_block.save(update_fields=['block'])
+    issues = hyphen_checker(step, settings)
 
-    issues = hyphen_checker(step)
-
-    assert len(issues) == 2
+    assert len(issues) == 2  # noqa: PLR2004
     assert issues[0][0] == IssueLevel.WARNING
     assert issues[0][1] == (
         'Ln 1, Col 2 (Global Pos 2): '
@@ -45,10 +54,15 @@ def test_hyphen_inside_formula() -> None:
     )
 
 
-def test_doubled_hyphen() -> None:
-    step_data = StepData(name='code', text='Some -- text')
+def test_doubled_hyphen(settings: Settings) -> None:
+    step = StepData(
+        name='code',
+        text='Some -- text',
+        step_index=1,
+        options=CodeStepOptions(code_templates={}),
+    )
 
-    issues = hyphen_checker(step_data)
+    issues = hyphen_checker(step, settings)
 
     assert len(issues) == 1
     assert issues[0][0] == IssueLevel.WARNING
@@ -58,24 +72,27 @@ def test_doubled_hyphen() -> None:
     )
 
 
-def test_cyrillic_letters_has_not_cyrillic() -> None:
-    step = StepFactory()
+def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
+    step = StepData(
+        name='code',
+        text='Some text',
+        step_index=1,
+        options=CodeStepOptions(code_templates={}),
+    )
 
-    step.step_block.block = {'text': 'Some text'}
-    step.step_block.save(update_fields=['block'])
-
-    issues = simple_checker(step)
+    issues = simple_checker(step, settings)
 
     assert not issues
 
 
-def test_cyrillic_letters_has_cyrillic() -> None:
-    step = StepFactory()
+def test_cyrillic_letters_has_cyrillic(settings: Settings) -> None:
+    step = StepData(
+        name=BlockName.TEXT,
+        text='Hello wоrld', # noqa: RUF001
+        step_index=1, options=TextStepOptions()
+    )
 
-    step.step_block.block = {'text': 'Hello wоrld'}  # noqa: RUF001
-    step.step_block.save(update_fields=['block'])
-
-    issues = simple_checker(step)
+    issues = simple_checker(step, settings)
 
     assert len(issues) == 1
     assert issues[0][0] == IssueLevel.WARNING
@@ -85,15 +102,17 @@ def test_cyrillic_letters_has_cyrillic() -> None:
     )
 
 
-def test_unusual_quotes() -> None:
-    step = StepFactory()
+def test_unusual_quotes(settings: Settings) -> None:
+    step = StepData(
+        name=BlockName.TEXT,
+        text='Some ‘quoted text’',  # noqa: RUF001
+        step_index=1,
+        options=TextStepOptions(),
+    )
 
-    step.step_block.block = {'text': 'Some ‘quoted text’'}  # noqa: RUF001
-    step.step_block.save(update_fields=['block'])
+    issues = simple_checker(step, settings)
 
-    issues = simple_checker(step)
-
-    assert len(issues) == 2
+    assert len(issues) == 2  # noqa: PLR2004
     assert issues[0][0] == IssueLevel.WARNING
     assert issues[0][1] == (
         'Ln 1, Col 6 (Global Pos 6): Unusual quote(s) (‘) '  # noqa: RUF001
@@ -106,15 +125,17 @@ def test_unusual_quotes() -> None:
     )
 
 
-def test_unusual_doubled_quotes() -> None:
-    step = StepFactory()
+def test_unusual_doubled_quotes(settings: Settings) -> None:
+    step = StepData(
+        name=BlockName.TEXT,
+        text='Some “quoted text”',
+        step_index=1,
+        options=TextStepOptions(),
+    )
 
-    step.step_block.block = {'text': 'Some “quoted text”'}
-    step.step_block.save(update_fields=['block'])
+    issues = simple_checker(step, settings)
 
-    issues = simple_checker(step)
-
-    assert len(issues) == 2
+    assert len(issues) == 2  # noqa: PLR2004
     assert issues[0][0] == IssueLevel.WARNING
     assert issues[0][1] == (
         'Ln 1, Col 6 (Global Pos 6): '

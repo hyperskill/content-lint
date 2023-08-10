@@ -173,7 +173,7 @@ classmethod-decorators = [
 ]
 
 [tool.ruff.pylint]
-max-args = 5
+max-args = 6
 max-branches = 9
 max-returns = 45
 max-statements = 19

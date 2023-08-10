@@ -5,8 +5,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bs4 import BeautifulSoup
 
+    from content_lint.types import Settings
 
-def prepare_code_sections(bs: BeautifulSoup) -> None:
+
+def prepare_code_sections(bs: BeautifulSoup, settings: Settings) -> None:
     codes = bs.find_all('code')
     default_language = 'java'
     for code in codes:

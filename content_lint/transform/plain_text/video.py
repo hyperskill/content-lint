@@ -8,7 +8,7 @@ from content_lint.helpers import replace
 if TYPE_CHECKING:
     from typing import Final
 
-    from content_lint.types import Replacement, StepData
+    from content_lint.types import Replacement, Settings, StepData
 
 VIDEO_TAGS_REGEX: Final = re.compile(r'\[video(.*?)]([\s\S]*?)\[/video]', re.IGNORECASE)
 HTML_VIDEO_TAGS: Final = r'<video\g<1>>\g<2></video>'
@@ -21,5 +21,5 @@ REPLACE_TO_HYPERSKILL_FORMAT: Final[dict[re.Pattern[str], Replacement]] = {
 }
 
 
-def prepare_video(step: StepData) -> None:
+def prepare_video(step: StepData, settings: Settings) -> None:
     step['text'] = replace(step['text'], REPLACE_TO_HYPERSKILL_FORMAT)

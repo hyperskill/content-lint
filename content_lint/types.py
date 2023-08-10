@@ -10,6 +10,10 @@ from bs4 import BeautifulSoup
 Replacement = str | Callable[[re.Match[str]], str]
 
 
+class Settings(TypedDict):
+    supported_code_templates_languages: set[str]
+
+
 @unique
 class IssueLevel(StrEnum):
     __slots__ = ()
@@ -19,6 +23,7 @@ class IssueLevel(StrEnum):
 
 
 class FileData(TypedDict):
+    name: str
     is_visible: bool
 
 
@@ -26,8 +31,11 @@ class StageData(TypedDict):
     is_template_based: bool
 
 
-class StepOptions(TypedDict):
+class CodeStepOptions(TypedDict):
     code_templates: dict[str, str]
+
+
+class PyCharmStepOptions(TypedDict):
     files: NotRequired[list[FileData]]
     language: NotRequired[str]
 
@@ -38,15 +46,19 @@ class ChoiceStepOption(TypedDict):
     feedback: str
 
 
+class TextStepOptions(TypedDict):
+    pass
+
+
 class StepData(TypedDict):
     name: str
     text: str
     step_index: int
-    options: StepOptions | list[ChoiceStepOption]
+    options: CodeStepOptions | list[ChoiceStepOption] | TextStepOptions | PyCharmStepOptions
     stage: NotRequired[StageData]
 
 
-StepTransformer = Callable[[StepData], None]
-StepHtmlTransformer = Callable[[BeautifulSoup], None]
-StepChecker = Callable[[StepData], tuple[tuple[IssueLevel, str], ...]]
-ToCogniterraTransformer = Callable[[StepData], None]
+StepTransformer = Callable[[StepData, Settings], None]
+StepHtmlTransformer = Callable[[BeautifulSoup, Settings], None]
+StepChecker = Callable[[StepData, Settings], tuple[tuple[IssueLevel, str], ...]]
+ToCogniterraTransformer = Callable[[StepData, Settings], None]

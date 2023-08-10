@@ -8,7 +8,7 @@ from content_lint.helpers import replace
 if TYPE_CHECKING:
     from typing import Final
 
-    from content_lint.types import Replacement, StepData
+    from content_lint.types import Replacement, Settings, StepData
 
 ALERT_TAGS_REGEX: Final = re.compile(
     r'\[ALERT-(.*?)]([\s\S]*?)\[/ALERT]', re.IGNORECASE
@@ -20,5 +20,5 @@ REPLACE_TO_HYPERSKILL_FORMAT: Final[dict[re.Pattern[str], Replacement]] = {
 }
 
 
-def prepare_alerts(step: StepData) -> None:
+def prepare_alerts(step: StepData, settings: Settings) -> None:
     step['text'] = replace(step['text'], REPLACE_TO_HYPERSKILL_FORMAT)

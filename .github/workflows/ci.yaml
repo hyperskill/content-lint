@@ -15,7 +15,7 @@ jobs:
       - name: Config poetry
         run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --only main,dev --no-interaction --no-ansi --no-cache
+        run: poetry install --no-interaction --no-ansi --no-cache
       - name: Lint
         run: ruff .
   type_checking:
@@ -32,7 +32,7 @@ jobs:
       - name: Config poetry
         run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --only main,dev --no-interaction --no-ansi --no-cache
+        run: poetry install --no-interaction --no-ansi --no-cache
       - name: Lint
         run: mypy .
   tests:
@@ -49,6 +49,6 @@ jobs:
       - name: Config poetry
         run: poetry config virtualenvs.create false
       - name: Install dependencies
-        run: poetry install --only main,dev --no-interaction --no-ansi --no-cache
+        run: poetry install --no-interaction --no-ansi --no-cache
       - name: Pytest
         run: pytest .

@@ -13,6 +13,8 @@ from svgelements import SVG
 if TYPE_CHECKING:
     from bs4 import BeautifulSoup
 
+    from content_lint.types import Settings
+
 logger = structlog.getLogger()
 
 
@@ -73,7 +75,7 @@ def get_height_based_on_aspect_ratio(
     return math.ceil(width * image_height / image_width)
 
 
-def prepare_images(bs: BeautifulSoup) -> None:
+def prepare_images(bs: BeautifulSoup, settings: Settings) -> None:
     images = bs.find_all('img')
     for image in images:
         if 'src' not in image.attrs:

@@ -1,0 +1,29 @@
+name: Format code
+on: [pull_request]
+jobs:
+  format:
+    name: Format with black and ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        run: python -m pip install --upgrade poetry==1.5.1
+      - name: Config poetry
+        run: poetry config virtualenvs.create false
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi --no-cache
+      - name: Check files using the black formatter
+        run: black .
+      - name: Check files using the ruff formatter
+        run: ruff --fix --exit-zero .
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Auto format'
+          add: '*.py'
