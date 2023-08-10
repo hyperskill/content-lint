@@ -4,7 +4,7 @@ import pytest
 
 from content_lint.constants import BlockName
 from content_lint.transform.plain_text.text import clear_text_from_title
-from content_lint.types import Settings, StepData, TextStepOptions
+from content_lint.types import Settings, StepBlock, TextStepOptions
 
 
 @pytest.mark.parametrize(
@@ -23,10 +23,8 @@ from content_lint.types import Settings, StepData, TextStepOptions
 def test_clear_text_from_title(
     stepik_text: str, hyperskill_text: str, settings: Settings
 ) -> None:
-    step = StepData(
-        name=BlockName.TEXT, text=stepik_text, step_index=1, options=TextStepOptions()
-    )
+    step = StepBlock(name=BlockName.TEXT, text=stepik_text, options=TextStepOptions())
 
-    clear_text_from_title(step, settings)
+    clear_text_from_title(step, settings, step_index=1)
 
     assert hyperskill_text == step['text']

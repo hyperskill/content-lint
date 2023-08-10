@@ -3,21 +3,31 @@ from __future__ import annotations
 from typing import cast
 
 from content_lint.constants import BlockName
-from content_lint.types import IssueLevel, PyCharmStepOptions, Settings, StepData
+from content_lint.types import (
+    IssueLevel,
+    PyCharmStepOptions,
+    Settings,
+    StageData,
+    StepBlock,
+)
 
 
 def check_stages(
-    step: StepData, settings: Settings
+    block: StepBlock,
+    settings: Settings,
+    *,
+    step_index: int | None = None,
+    stage: StageData | None = None,
 ) -> tuple[tuple[IssueLevel, str], ...]:
     if (
-        not step['stage']
-        or step['stage']['is_template_based']
-        or step['name'] != BlockName.PYCHARM
-        or step['step_index'] == 1
+        not stage
+        or stage['is_template_based']
+        or block['name'] != BlockName.PYCHARM
+        or step_index == 1
     ):
         return ()
 
-    options = cast(PyCharmStepOptions, step['options'])
+    options = cast(PyCharmStepOptions, block['options'])
     files = options['files']
 
     if any(file.get('is_visible', True) for file in files):
@@ -25,7 +35,7 @@ def check_stages(
             (
                 IssueLevel.ERROR,
                 f"This step is a stage. This stage's project is not template based. "
-                f"Therefore Stage #{step['step_index']} can't have new visible files.",
+                f"Therefore Stage #{step_index} can't have new visible files.",
             ),
         )
 

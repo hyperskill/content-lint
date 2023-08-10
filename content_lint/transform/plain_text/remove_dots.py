@@ -4,7 +4,7 @@ import re
 from typing import cast
 
 from content_lint.constants import BlockName
-from content_lint.types import ChoiceStepOption, Settings, StepData
+from content_lint.types import ChoiceStepOption, Settings, StageData, StepBlock
 
 PATTERN = re.compile(r"[a-zA-Z0-9!@#$%^&*()_+-={}\[\]|\\:;\"\'<>,?/~`]")
 
@@ -25,11 +25,17 @@ def remove_dots_in_the_string(text: str) -> str:
     return text
 
 
-def remove_dots(step_block: StepData, settings: Settings) -> None:
-    if step_block['name'] != BlockName.CHOICE:
+def remove_dots(
+    block: StepBlock,
+    settings: Settings,
+    *,
+    step_index: int | None = None,
+    stage: StageData | None = None,
+) -> None:
+    if block['name'] != BlockName.CHOICE:
         return
 
-    options = cast(list[ChoiceStepOption], step_block['options'])
+    options = cast(list[ChoiceStepOption], block['options'])
 
     for option in options:
         option['text'] = remove_dots_in_the_string(option['text'])

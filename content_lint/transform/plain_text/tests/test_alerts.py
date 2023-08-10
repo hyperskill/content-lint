@@ -6,7 +6,7 @@ import pytest
 
 from content_lint.constants import BlockName
 from content_lint.transform.plain_text.alerts import prepare_alerts
-from content_lint.types import StepData, TextStepOptions
+from content_lint.types import StepBlock, TextStepOptions
 
 if TYPE_CHECKING:
     from content_lint.types import Settings
@@ -38,10 +38,8 @@ test_cases_for_prepare_alerts = {
 def test_prepare_alerts_to_hyperskill_format(
     text: str, result: str, settings: Settings
 ) -> None:
-    step = StepData(
-        name=BlockName.TEXT, text=text, step_index=1, options=TextStepOptions()
-    )
+    step = StepBlock(name=BlockName.TEXT, text=text, options=TextStepOptions())
 
-    prepare_alerts(step, settings)
+    prepare_alerts(step, settings, step_index=1)
 
     assert step['text'] == result

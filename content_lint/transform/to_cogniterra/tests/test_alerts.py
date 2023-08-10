@@ -4,7 +4,7 @@ import pytest
 
 from content_lint.constants import BlockName
 from content_lint.transform.to_cogniterra.alerts import prepare_alerts_for_cogniterra
-from content_lint.types import Settings, StepData, TextStepOptions
+from content_lint.types import Settings, StepBlock, TextStepOptions
 
 test_cases_for_prepare_alerts = {
     (
@@ -36,9 +36,7 @@ test_cases_for_prepare_alerts = {
 def test_prepare_alerts_to_stepik_format(
     text: str, result: str, settings: Settings
 ) -> None:
-    step = StepData(
-        name=BlockName.TEXT, step_index=1, text=text, options=TextStepOptions()
-    )
+    step = StepBlock(name=BlockName.TEXT, text=text, options=TextStepOptions())
     prepare_alerts_for_cogniterra(step, settings)
 
     assert step['text'] == result

@@ -6,7 +6,7 @@ from typing import Final, TYPE_CHECKING
 from content_lint.helpers import replace
 
 if TYPE_CHECKING:
-    from content_lint.types import Replacement, Settings, StepData
+    from content_lint.types import Replacement, Settings, StepBlock
 
 ALERT_TAGS: Final = r'[ALERT-\g<1>]\g<2>[/ALERT]'
 HTML_DIV_ALERT_TAGS_REGEX: Final = re.compile(
@@ -18,5 +18,5 @@ REPLACE_TO_COGNITERRA_FORMAT: Final[dict[re.Pattern[str], Replacement]] = {
 }
 
 
-def prepare_alerts_for_cogniterra(step: StepData, settings: Settings) -> None:
-    step['text'] = replace(step['text'], REPLACE_TO_COGNITERRA_FORMAT)
+def prepare_alerts_for_cogniterra(block: StepBlock, settings: Settings) -> None:
+    block['text'] = replace(block['text'], REPLACE_TO_COGNITERRA_FORMAT)

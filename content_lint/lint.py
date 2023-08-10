@@ -27,8 +27,9 @@ if TYPE_CHECKING:
     from content_lint.types import (
         IssueLevel,
         Settings,
+        StageData,
+        StepBlock,
         StepChecker,
-        StepData,
         StepHtmlTransformer,
         StepTransformer,
         ToCogniterraTransformer,
@@ -51,7 +52,7 @@ HTML_FIXERS: Final[tuple[StepHtmlTransformer, ...]] = (
 )
 
 
-def fix_step_text(step: StepData, settings: Settings) -> None:
+def fix_step_text(step: StepBlock, settings: Settings) -> None:
     for plain_text_operation in PLAIN_TEXT_FIXERS:
         plain_text_operation(step, settings)
 
@@ -74,17 +75,23 @@ CHECKERS: tuple[StepChecker, ...] = (
 )
 
 
-def check_step_text(step: StepData, settings: Settings) -> list[tuple[IssueLevel, str]]:
+def check_step_text(
+    block: StepBlock,
+    settings: Settings,
+    *,
+    step_index: int | None = None,
+    stage: StageData | None = None,
+) -> list[tuple[IssueLevel, str]]:
     all_issues: list[tuple[IssueLevel, str]] = []
 
     for checker in CHECKERS:
-        issues = checker(step, settings)
+        issues = checker(block, settings, step_index=step_index, stage=stage)
         all_issues.extend(issues)
 
     return all_issues
 
 
-def lint(step: StepData, settings: Settings) -> list[tuple[IssueLevel, str]]:
+def lint(step: StepBlock, settings: Settings) -> list[tuple[IssueLevel, str]]:
     fix_step_text(step, settings)
     return check_step_text(step, settings)
 
@@ -95,6 +102,6 @@ TO_COGNITERRA_TRANSFORMERS: tuple[ToCogniterraTransformer, ...] = (
 )
 
 
-def transform_for_cogniterra(step: StepData, settings: Settings) -> None:
+def transform_for_cogniterra(step: StepBlock, settings: Settings) -> None:
     for operation in TO_COGNITERRA_TRANSFORMERS:
         operation(step, settings)

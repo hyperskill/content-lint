@@ -6,7 +6,7 @@ from typing import Final, TYPE_CHECKING
 from content_lint.helpers import replace, Replacement
 
 if TYPE_CHECKING:
-    from content_lint.types import Settings, StepData
+    from content_lint.types import Settings, StepBlock
 
 HTML_VIDEO_ALERT_TAGS_REGEX: Final = re.compile(
     r'<video(.*?)>([\s\S]*?)</video>', re.IGNORECASE
@@ -21,5 +21,5 @@ REPLACE_TO_STEPIK_FORMAT: Final[dict[re.Pattern[str], Replacement]] = {
 }
 
 
-def prepare_video_for_cogniterra(step: StepData, settings: Settings) -> None:
-    step['text'] = replace(step['text'], REPLACE_TO_STEPIK_FORMAT)
+def prepare_video_for_cogniterra(block: StepBlock, settings: Settings) -> None:
+    block['text'] = replace(block['text'], REPLACE_TO_STEPIK_FORMAT)

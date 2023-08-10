@@ -3,9 +3,10 @@ from __future__ import annotations
 import re
 from collections.abc import Callable
 from enum import StrEnum, unique
-from typing import NotRequired, TypedDict
+from typing import NotRequired, Protocol, TYPE_CHECKING, TypedDict
 
-from bs4 import BeautifulSoup
+if TYPE_CHECKING:
+    from bs4 import BeautifulSoup
 
 Replacement = str | Callable[[re.Match[str]], str]
 
@@ -50,17 +51,47 @@ class TextStepOptions(TypedDict):
     pass
 
 
-class StepData(TypedDict):
+class StepBlock(TypedDict):
     name: str
     text: str
-    step_index: int
     options: CodeStepOptions | list[
         ChoiceStepOption
     ] | TextStepOptions | PyCharmStepOptions
-    stage: NotRequired[StageData]
 
 
-StepTransformer = Callable[[StepData, Settings], None]
-StepHtmlTransformer = Callable[[BeautifulSoup, Settings], None]
-StepChecker = Callable[[StepData, Settings], tuple[tuple[IssueLevel, str], ...]]
-ToCogniterraTransformer = Callable[[StepData, Settings], None]
+class StepTransformer(Protocol):
+    def __call__(
+        self,
+        block: StepBlock,
+        settings: Settings,
+        *,
+        step_index: int | None = None,
+        stage: StageData | None = None,
+    ) -> None:
+        """Make step block transformations."""
+        ...
+
+
+class StepChecker(Protocol):
+    def __call__(
+        self,
+        block: StepBlock,
+        settings: Settings,
+        *,
+        step_index: int | None = None,
+        stage: StageData | None = None,
+    ) -> tuple[tuple[IssueLevel, str], ...]:
+        """Check step block."""
+        ...
+
+
+class StepHtmlTransformer(Protocol):
+    def __call__(self, bs: BeautifulSoup, settings: Settings) -> None:
+        """Make step block transformations."""
+        ...
+
+
+class ToCogniterraTransformer(Protocol):
+    def __call__(self, block: StepBlock, settings: Settings) -> None:
+        """Make step block transformations to cogniterra format."""
+        ...

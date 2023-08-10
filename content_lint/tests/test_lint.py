@@ -7,35 +7,35 @@ from content_lint.types import (
     PyCharmStepOptions,
     Settings,
     StageData,
-    StepData,
+    StepBlock,
 )
 
 
 def test_step_no_critical_issues(settings: Settings) -> None:
-    step_data = StepData(
+    step_data = StepBlock(
         name='pycharm',
         text='Step text',
-        step_index=2,
         options=PyCharmStepOptions(files=[]),
-        stage=StageData(is_template_based=False),
     )
 
-    issues = check_step_text(step_data, settings)
+    issues = check_step_text(
+        step_data, settings, step_index=2, stage=StageData(is_template_based=False)
+    )
 
     assert len(issues) == 0
     assert any(issue[0] == IssueLevel.ERROR for issue in issues) is False
 
 
 def test_step_has_critical_issues(settings: Settings) -> None:
-    step_data = StepData(
+    block = StepBlock(
         name='code',
         text='Step text',
-        step_index=2,
         options=CodeStepOptions(code_templates={}),
-        stage=StageData(is_template_based=False),
     )
 
-    issues = check_step_text(step_data, settings)
+    issues = check_step_text(
+        block, step_index=2, stage=StageData(is_template_based=False), settings=settings
+    )
 
     assert len(issues) == 1
     assert any(issue[0] == IssueLevel.ERROR for issue in issues) is True

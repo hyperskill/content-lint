@@ -4,19 +4,23 @@ from typing import cast, TYPE_CHECKING
 
 from content_lint.checks.checkers import IssueLevel
 from content_lint.constants import BlockName
-from content_lint.types import CodeStepOptions
+from content_lint.types import CodeStepOptions, StageData
 
 if TYPE_CHECKING:
-    from content_lint.types import Settings, StepData
+    from content_lint.types import Settings, StepBlock
 
 
 def check_languages(
-    step: StepData, settings: Settings
+    block: StepBlock,
+    settings: Settings,
+    *,
+    step_index: int | None = None,
+    stage: StageData | None = None,
 ) -> tuple[tuple[IssueLevel, str], ...]:
-    if step['name'] != BlockName.CODE:
+    if block['name'] != BlockName.CODE:
         return ()
 
-    options = cast(CodeStepOptions, step['options'])
+    options = cast(CodeStepOptions, block['options'])
     code_templates = options['code_templates']
     if not code_templates:
         return (

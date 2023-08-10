@@ -7,7 +7,7 @@ from content_lint.transform.plain_text.remove_dots import (
     remove_dots,
     remove_dots_in_the_string,
 )
-from content_lint.types import ChoiceStepOption, Settings, StepData
+from content_lint.types import ChoiceStepOption, Settings, StepBlock
 
 
 @pytest.mark.parametrize(
@@ -58,8 +58,7 @@ def test_remove_dots_in_the_string(text: str, result: str) -> None:
 
 
 def test_remove_dots(settings: Settings) -> None:
-    step_data = StepData(
-        step_index=1,
+    step_data = StepBlock(
         name=BlockName.CHOICE,
         text='text',
         options=[
@@ -77,7 +76,6 @@ def test_remove_dots(settings: Settings) -> None:
     remove_dots(step_data, settings)
 
     assert step_data == {
-        'step_index': 1,
         'name': 'choice',
         'text': 'text',
         'options': [
@@ -94,8 +92,7 @@ def test_remove_dots(settings: Settings) -> None:
 
 
 def test_remove_dots_no_options_key(settings: Settings) -> None:
-    step = StepData(
-        step_index=1,
+    step = StepBlock(
         name=BlockName.CHOICE,
         text='text',
         options=[],
@@ -104,7 +101,6 @@ def test_remove_dots_no_options_key(settings: Settings) -> None:
     remove_dots(step, settings)
 
     assert step == {
-        'step_index': 1,
         'name': 'choice',
         'text': 'text',
         'options': [],

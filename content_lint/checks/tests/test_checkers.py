@@ -6,16 +6,15 @@ from content_lint.types import (
     CodeStepOptions,
     IssueLevel,
     Settings,
-    StepData,
+    StepBlock,
     TextStepOptions,
 )
 
 
 def test_hyphen(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name=BlockName.CODE,
         text='Some - text',
-        step_index=1,
         options=CodeStepOptions(code_templates={}),
     )
 
@@ -30,11 +29,10 @@ def test_hyphen(settings: Settings) -> None:
 
 
 def test_hyphen_inside_formula(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name=BlockName.CODE,
         text='m - 1 some text \n'
         '<span class="math-tex">(n - 1)</span> some text k - 1',
-        step_index=1,
         options=CodeStepOptions(code_templates={}),
     )
 
@@ -55,10 +53,9 @@ def test_hyphen_inside_formula(settings: Settings) -> None:
 
 
 def test_doubled_hyphen(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name='code',
         text='Some -- text',
-        step_index=1,
         options=CodeStepOptions(code_templates={}),
     )
 
@@ -73,10 +70,9 @@ def test_doubled_hyphen(settings: Settings) -> None:
 
 
 def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name='code',
         text='Some text',
-        step_index=1,
         options=CodeStepOptions(code_templates={}),
     )
 
@@ -86,10 +82,9 @@ def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
 
 
 def test_cyrillic_letters_has_cyrillic(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name=BlockName.TEXT,
         text='Hello wоrld',  # noqa: RUF001
-        step_index=1,
         options=TextStepOptions(),
     )
 
@@ -104,10 +99,9 @@ def test_cyrillic_letters_has_cyrillic(settings: Settings) -> None:
 
 
 def test_unusual_quotes(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name=BlockName.TEXT,
         text='Some ‘quoted text’',  # noqa: RUF001
-        step_index=1,
         options=TextStepOptions(),
     )
 
@@ -127,10 +121,9 @@ def test_unusual_quotes(settings: Settings) -> None:
 
 
 def test_unusual_doubled_quotes(settings: Settings) -> None:
-    step = StepData(
+    step = StepBlock(
         name=BlockName.TEXT,
         text='Some “quoted text”',
-        step_index=1,
         options=TextStepOptions(),
     )
 
