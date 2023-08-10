@@ -100,7 +100,7 @@ def test_remove_dots_no_options_key(settings: Settings) -> None:
 
     remove_dots(step, settings)
 
-    assert step == {
+    assert step == {  # type: ignore[comparison-overlap]
         'name': 'choice',
         'text': 'text',
         'options': [],
