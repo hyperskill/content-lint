@@ -54,7 +54,9 @@ class StepData(TypedDict):
     name: str
     text: str
     step_index: int
-    options: CodeStepOptions | list[ChoiceStepOption] | TextStepOptions | PyCharmStepOptions
+    options: CodeStepOptions | list[
+        ChoiceStepOption
+    ] | TextStepOptions | PyCharmStepOptions
     stage: NotRequired[StageData]
 
 

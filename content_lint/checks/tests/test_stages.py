@@ -4,10 +4,10 @@ from content_lint.checks.stages import check_stages
 from content_lint.types import (
     CodeStepOptions,
     IssueLevel,
+    PyCharmStepOptions,
     Settings,
     StageData,
     StepData,
-    PyCharmStepOptions,
 )
 
 

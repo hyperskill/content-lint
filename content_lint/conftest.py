@@ -1,17 +1,26 @@
 from __future__ import annotations
 
-from typing import Generator
+from typing import TYPE_CHECKING
 
 import pytest
 import responses
 
 from content_lint.types import Settings
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
 
 @pytest.fixture()
 def settings() -> Settings:
     return Settings(
-        supported_code_templates_languages={'python3', 'java', 'javascript', 'go', 'java17'}
+        supported_code_templates_languages={
+            'python3',
+            'java',
+            'javascript',
+            'go',
+            'java17',
+        }
     )
 
 

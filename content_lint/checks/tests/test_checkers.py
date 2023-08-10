@@ -88,8 +88,9 @@ def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
 def test_cyrillic_letters_has_cyrillic(settings: Settings) -> None:
     step = StepData(
         name=BlockName.TEXT,
-        text='Hello wоrld', # noqa: RUF001
-        step_index=1, options=TextStepOptions()
+        text='Hello wоrld',  # noqa: RUF001
+        step_index=1,
+        options=TextStepOptions(),
     )
 
     issues = simple_checker(step, settings)

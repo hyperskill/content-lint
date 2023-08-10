@@ -18,7 +18,7 @@ def remove_dots_in_the_string(text: str) -> str:
         return text
     if text.endswith('..'):
         return text[:-1]
-    if text == '.' or text.endswith('\.'):
+    if text == '.' or text.endswith(r'\.'):
         return text
     if PATTERN.search(text) and text[-1] == '.':
         return text[:-1]
