@@ -38,4 +38,5 @@ def remove_dots(
     options = cast(list[ChoiceStepOption], block['options'])
 
     for option in options:
-        option['text'] = remove_dots_in_the_string(option['text'])
+        if isinstance(option, dict) and 'text' in option:
+            option['text'] = remove_dots_in_the_string(option['text'])
