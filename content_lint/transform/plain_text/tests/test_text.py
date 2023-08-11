@@ -4,7 +4,12 @@ import pytest
 
 from content_lint.constants import BlockName
 from content_lint.transform.plain_text.text import prepare_text
-from content_lint.types import CodeStepOptions, Settings, StepBlock, TextStepOptions
+from content_lint.types import (
+    CodeStepOptions,
+    CodeStepSource,
+    Settings,
+    StepBlock,
+)
 
 
 @pytest.mark.parametrize(
@@ -61,6 +66,7 @@ def test_prepare_text(
         name='code',
         text=stepik_text,
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
     prepare_text(step_data, settings)
 
@@ -74,11 +80,7 @@ def test_prepare_text(
 
 
 def test_clean_zero_width_spaces(settings: Settings) -> None:
-    step = StepBlock(
-        name=BlockName.TEXT,
-        text='t\ufeffe\u200bxt',
-        options=TextStepOptions(),
-    )
+    step = StepBlock(name=BlockName.TEXT, text='t\ufeffe\u200bxt', source=None)
 
     prepare_text(step, settings, step_index=1)
 
@@ -90,7 +92,7 @@ def test_clean_spaces(settings: Settings) -> None:
         name=BlockName.TEXT,
         text='t\u00a0e\u1680x\u180et\u2000t\u2001e\u2002 \u2003t\u2004e\u2005'
         '\t\u2006\u2007text\u2008\u2009_\u200a\n\u2028\u2029\u202f\u205fx\u3000',
-        options=TextStepOptions(),
+        source=None,
     )
 
     prepare_text(

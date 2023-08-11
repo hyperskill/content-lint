@@ -7,7 +7,7 @@ from content_lint.transform.plain_text.remove_dots import (
     remove_dots,
     remove_dots_in_the_string,
 )
-from content_lint.types import ChoiceStepOption, Settings, StepBlock
+from content_lint.types import ChoiceStepOption, ChoiceStepSource, Settings, StepBlock
 
 
 @pytest.mark.parametrize(
@@ -61,16 +61,18 @@ def test_remove_dots(settings: Settings) -> None:
     step_data = StepBlock(
         name=BlockName.CHOICE,
         text='text',
-        options=[
-            ChoiceStepOption(text='test.....', feedback='', is_correct=False),
-            ChoiceStepOption(text='test....', feedback='', is_correct=True),
-            ChoiceStepOption(text='test...', feedback='', is_correct=False),
-            ChoiceStepOption(text='test..', feedback='', is_correct=False),
-            ChoiceStepOption(text='.', feedback='', is_correct=False),
-            ChoiceStepOption(text=r'test\.', feedback='', is_correct=False),
-            ChoiceStepOption(text='test.', feedback='', is_correct=False),
-            ChoiceStepOption(text='test', feedback='', is_correct=False),
-        ],
+        source=ChoiceStepSource(
+            options=[
+                ChoiceStepOption(text='test.....', feedback='', is_correct=False),
+                ChoiceStepOption(text='test....', feedback='', is_correct=True),
+                ChoiceStepOption(text='test...', feedback='', is_correct=False),
+                ChoiceStepOption(text='test..', feedback='', is_correct=False),
+                ChoiceStepOption(text='.', feedback='', is_correct=False),
+                ChoiceStepOption(text=r'test\.', feedback='', is_correct=False),
+                ChoiceStepOption(text='test.', feedback='', is_correct=False),
+                ChoiceStepOption(text='test', feedback='', is_correct=False),
+            ]
+        ),
     )
 
     remove_dots(step_data, settings)
@@ -78,30 +80,30 @@ def test_remove_dots(settings: Settings) -> None:
     assert step_data == {
         'name': 'choice',
         'text': 'text',
-        'options': [
-            {'text': 'test.....', 'feedback': '', 'is_correct': False},
-            {'text': 'test...', 'feedback': '', 'is_correct': True},
-            {'text': 'test...', 'feedback': '', 'is_correct': False},
-            {'text': 'test.', 'feedback': '', 'is_correct': False},
-            {'text': '.', 'feedback': '', 'is_correct': False},
-            {'text': r'test\.', 'feedback': '', 'is_correct': False},
-            {'text': 'test', 'feedback': '', 'is_correct': False},
-            {'text': 'test', 'feedback': '', 'is_correct': False},
-        ],
+        'source': {
+            'options': [
+                {'text': 'test.....', 'feedback': '', 'is_correct': False},
+                {'text': 'test...', 'feedback': '', 'is_correct': True},
+                {'text': 'test...', 'feedback': '', 'is_correct': False},
+                {'text': 'test.', 'feedback': '', 'is_correct': False},
+                {'text': '.', 'feedback': '', 'is_correct': False},
+                {'text': r'test\.', 'feedback': '', 'is_correct': False},
+                {'text': 'test', 'feedback': '', 'is_correct': False},
+                {'text': 'test', 'feedback': '', 'is_correct': False},
+            ],
+        },
     }
 
 
 def test_remove_dots_no_options_key(settings: Settings) -> None:
     step = StepBlock(
-        name=BlockName.CHOICE,
-        text='text',
-        options=[],
+        name=BlockName.CHOICE, text='text', source=ChoiceStepSource(options=[])
     )
 
     remove_dots(step, settings)
 
-    assert step == {  # type: ignore[comparison-overlap]
+    assert step == {
         'name': 'choice',
         'text': 'text',
-        'options': [],
+        'source': {'options': []},
     }

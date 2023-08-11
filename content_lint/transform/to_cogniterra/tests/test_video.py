@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from content_lint.constants import BlockName
 from content_lint.transform.to_cogniterra.video import prepare_video_for_cogniterra
-from content_lint.types import Settings, StepBlock, TextStepOptions
+from content_lint.types import Settings, StepBlock
 
 
 def test_load_video_to_stepik(settings: Settings) -> None:
@@ -15,7 +15,7 @@ def test_load_video_to_stepik(settings: Settings) -> None:
       Your browser does not support the video tag.
     </video>
     """,
-        options=TextStepOptions(),
+        source=None,
     )
 
     prepare_video_for_cogniterra(block, settings)

@@ -4,10 +4,10 @@ from content_lint.checks.checkers import hyphen_checker, simple_checker
 from content_lint.constants import BlockName
 from content_lint.types import (
     CodeStepOptions,
+    CodeStepSource,
     IssueLevel,
     Settings,
     StepBlock,
-    TextStepOptions,
 )
 
 
@@ -16,6 +16,7 @@ def test_hyphen(settings: Settings) -> None:
         name=BlockName.CODE,
         text='Some - text',
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
 
     issues = hyphen_checker(step, settings)
@@ -34,6 +35,7 @@ def test_hyphen_inside_formula(settings: Settings) -> None:
         text='m - 1 some text \n'
         '<span class="math-tex">(n - 1)</span> some text k - 1',
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
 
     issues = hyphen_checker(step, settings)
@@ -57,6 +59,7 @@ def test_doubled_hyphen(settings: Settings) -> None:
         name='code',
         text='Some -- text',
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
 
     issues = hyphen_checker(step, settings)
@@ -74,6 +77,7 @@ def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
         name='code',
         text='Some text',
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
 
     issues = simple_checker(step, settings)
@@ -83,9 +87,7 @@ def test_cyrillic_letters_has_not_cyrillic(settings: Settings) -> None:
 
 def test_cyrillic_letters_has_cyrillic(settings: Settings) -> None:
     step = StepBlock(
-        name=BlockName.TEXT,
-        text='Hello wоrld',  # noqa: RUF001
-        options=TextStepOptions(),
+        name=BlockName.TEXT, text='Hello wоrld', source=None  # noqa: RUF001
     )
 
     issues = simple_checker(step, settings)
@@ -102,7 +104,7 @@ def test_unusual_quotes(settings: Settings) -> None:
     step = StepBlock(
         name=BlockName.TEXT,
         text='Some ‘quoted text’',  # noqa: RUF001
-        options=TextStepOptions(),
+        source=None,
     )
 
     issues = simple_checker(step, settings)
@@ -124,7 +126,7 @@ def test_unusual_doubled_quotes(settings: Settings) -> None:
     step = StepBlock(
         name=BlockName.TEXT,
         text='Some “quoted text”',
-        options=TextStepOptions(),
+        source=None,
     )
 
     issues = simple_checker(step, settings)

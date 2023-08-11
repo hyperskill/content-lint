@@ -4,7 +4,12 @@ import re
 from typing import cast
 
 from content_lint.constants import BlockName
-from content_lint.types import ChoiceStepOption, Settings, StageData, StepBlock
+from content_lint.types import (
+    ChoiceStepSource,
+    Settings,
+    StageData,
+    StepBlock,
+)
 
 PATTERN = re.compile(r"[a-zA-Z0-9!@#$%^&*()_+-={}\[\]|\\:;\"\'<>,?/~`]")
 
@@ -35,8 +40,8 @@ def remove_dots(
     if block['name'] != BlockName.CHOICE:
         return
 
-    options = cast(list[ChoiceStepOption], block['options'])
+    source = cast(ChoiceStepSource, block['source'])
 
-    for option in options:
+    for option in source['options']:
         if isinstance(option, dict) and 'text' in option:
             option['text'] = remove_dots_in_the_string(option['text'])

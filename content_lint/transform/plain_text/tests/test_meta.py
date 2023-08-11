@@ -6,7 +6,7 @@ import pytest
 
 from content_lint.constants import BlockName
 from content_lint.transform.plain_text.meta import prepare_meta
-from content_lint.types import StepBlock, TextStepOptions
+from content_lint.types import StepBlock
 
 if TYPE_CHECKING:
     from content_lint.types import Settings
@@ -49,7 +49,7 @@ if TYPE_CHECKING:
 def test_prepare_meta_when_has_text(
     text: str, expected_text: str, settings: Settings
 ) -> None:
-    step = StepBlock(name=BlockName.TEXT, text=text, options=TextStepOptions())
+    step = StepBlock(name=BlockName.TEXT, text=text, source=None)
 
     prepare_meta(step, settings, step_index=1)
     assert step['text'] == expected_text

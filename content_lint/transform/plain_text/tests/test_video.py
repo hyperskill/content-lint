@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from content_lint.constants import BlockName
 from content_lint.transform.plain_text.video import prepare_video
-from content_lint.types import Settings, StepBlock, TextStepOptions
+from content_lint.types import Settings, StepBlock
 
 
 def test_load_video_from_stepik(settings: Settings) -> None:
@@ -15,7 +15,7 @@ def test_load_video_from_stepik(settings: Settings) -> None:
       Your browser does not support the video tag.
     [/video]
     """,
-        options=TextStepOptions(),
+        source=None,
     )
 
     prepare_video(block, settings)

@@ -3,8 +3,9 @@ from __future__ import annotations
 from content_lint.checks.stages import check_stages
 from content_lint.types import (
     CodeStepOptions,
+    CodeStepSource,
     IssueLevel,
-    PyCharmStepOptions,
+    PyCharmStepSource,
     Settings,
     StageData,
     StepBlock,
@@ -15,8 +16,8 @@ def test_stage_without_template_based_project(settings: Settings) -> None:
     step = StepBlock(
         name='pycharm',
         text='Some text',
-        options=PyCharmStepOptions(
-            files=[{'name': 'src/Main.java', 'is_visible': True}],
+        source=PyCharmStepSource(
+            files=[{'name': 'src/Main.java', 'text': '//', 'is_visible': True}],
         ),
     )
 
@@ -36,6 +37,7 @@ def test_stage_with_template_based_project(settings: Settings) -> None:
         options=CodeStepOptions(
             code_templates={},
         ),
+        source=CodeStepSource(code=''),  # TODO: Add templates to source
     )
 
     issues = check_stages(

@@ -3,8 +3,10 @@ from __future__ import annotations
 from content_lint.lint import check_step_text
 from content_lint.types import (
     CodeStepOptions,
+    CodeStepSource,
     IssueLevel,
     PyCharmStepOptions,
+    PyCharmStepSource,
     Settings,
     StageData,
     StepBlock,
@@ -16,6 +18,7 @@ def test_step_no_critical_issues(settings: Settings) -> None:
         name='pycharm',
         text='Step text',
         options=PyCharmStepOptions(files=[]),
+        source=PyCharmStepSource(files=[]),
     )
 
     issues = check_step_text(
@@ -31,6 +34,7 @@ def test_step_has_critical_issues(settings: Settings) -> None:
         name='code',
         text='Step text',
         options=CodeStepOptions(code_templates={}),
+        source=CodeStepSource(code=''),
     )
 
     issues = check_step_text(

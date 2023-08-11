@@ -5,7 +5,7 @@ from typing import cast
 from content_lint.constants import BlockName
 from content_lint.types import (
     IssueLevel,
-    PyCharmStepOptions,
+    PyCharmStepSource,
     Settings,
     StageData,
     StepBlock,
@@ -27,8 +27,8 @@ def check_stages(
     ):
         return ()
 
-    options = cast(PyCharmStepOptions, block['options'])
-    files = options['files']
+    source = cast(PyCharmStepSource, block['source'])
+    files = source['files']
 
     if any(file.get('is_visible', True) for file in files):
         return (

@@ -25,6 +25,7 @@ class IssueLevel(StrEnum):
 
 class FileData(TypedDict):
     name: str
+    text: str
     is_visible: bool
 
 
@@ -47,16 +48,26 @@ class ChoiceStepOption(TypedDict):
     feedback: str
 
 
-class TextStepOptions(TypedDict):
-    pass
+class ChoiceStepSource(TypedDict):
+    options: list[ChoiceStepOption]
+    ...
+
+
+class CodeStepSource(TypedDict):
+    code: str
+    ...
+
+
+class PyCharmStepSource(TypedDict):
+    files: list[FileData]
+    ...
 
 
 class StepBlock(TypedDict):
     name: str
     text: str
-    options: CodeStepOptions | list[
-        ChoiceStepOption
-    ] | TextStepOptions | PyCharmStepOptions
+    options: NotRequired[PyCharmStepOptions | CodeStepOptions]
+    source: ChoiceStepSource | CodeStepSource | PyCharmStepSource | None
 
 
 class StepTransformer(Protocol):
