@@ -21,7 +21,7 @@ def check_languages(
         return ()
 
     options = cast(CodeStepOptions, block['options'])
-    code_templates = options['code_templates']
+    code_templates = options.get('code_templates')
     if not code_templates:
         return (
             (
