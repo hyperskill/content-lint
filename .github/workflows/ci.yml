@@ -3,7 +3,7 @@ name: CI
 jobs:
   lint:
     name: Lint
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
         run: ruff .
   type_checking:
     name: Static type checking
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,7 +45,7 @@ jobs:
         run: mypy .
   tests:
     name: Unit-tests
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

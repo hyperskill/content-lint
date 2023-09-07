@@ -3,7 +3,7 @@ on: [pull_request]
 jobs:
   format:
     name: Format with black and ruff
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - uses: actions/checkout@v2
         with:

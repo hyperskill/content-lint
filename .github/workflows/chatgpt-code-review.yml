@@ -11,7 +11,7 @@ on:
 jobs:
   code_review:
     if: ${{ contains(github.event.*.labels.*.name, 'gpt review') }}
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - uses: anc95/ChatGPT-CodeReview@main
         env:

@@ -9,6 +9,6 @@ permissions:
 
 jobs:
   assign-author:
-    runs-on: [self-hosted, Linux, X64]
+    runs-on: [self-hosted]
     steps:
       - uses: toshimaru/auto-author-assign@v1.6.2
